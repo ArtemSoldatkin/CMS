@@ -20,7 +20,15 @@ func childrenToString(n tag) string {
 	for _, c := range n.children {
 		result += childrenToString(c)
 	}
-	return fmt.Sprintf("<%s id='%s' %s>%s%s</%s>", n.name, n.uid, strings.Join(n.attributes, " "), n.value, result, n.name)
+	return fmt.Sprintf("<%s id='%s'>%s%s</%s>", n.name, n.uid, n.value, result, n.name)
+}
+
+func childrenStyleToString(t tag) string {
+	result := ""
+	for _, c := range t.children {
+		result += childrenStyleToString(c)
+	}
+	return fmt.Sprintf("%s#%s {%s;}\n", result, t.uid, strings.Join(t.style, "; "))
 }
 
 func generateUID() string {
@@ -29,7 +37,7 @@ func generateUID() string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return fmt.Sprintf("%x-%x-%x-%x-%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+	return fmt.Sprintf("id%x-%x-%x-%x-%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
 }
 
 func findChildPos(t *tag, child tag) (int, error) {

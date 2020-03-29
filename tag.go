@@ -1,12 +1,13 @@
 package main
 
 type tag struct {
-	uid      string
-	name     string
-	style    []string
-	children []tag
-	value    string
-	action   []action
+	uid        string
+	name       string
+	attributes []string
+	style      []string
+	children   []tag
+	value      string
+	action     []action
 }
 
 func (t *tag) Init() {

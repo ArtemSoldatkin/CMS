@@ -20,7 +20,10 @@ func childrenToString(n tag) string {
 	for _, c := range n.children {
 		result += childrenToString(c)
 	}
-	return fmt.Sprintf("<%s id='%s'>%s%s</%s>", n.name, n.uid, n.value, result, n.name)
+	if n.name == "input" {
+		return fmt.Sprintf("<%s id=\"%s\" %s %s/>", n.name, n.uid, strings.Join(n.attributes, " "), n.value)
+	}
+	return fmt.Sprintf("<%s id='%s' %s>%s%s</%s>", n.name, n.uid, strings.Join(n.attributes, " "), n.value, result, n.name)
 }
 
 func childrenStyleToString(t tag) string {
@@ -33,6 +36,11 @@ func childrenStyleToString(t tag) string {
 
 func childrenActionToString(t tag) string {
 	result := ""
+	if t.name == "form" {
+		if len(t.action) > 0 {
+			t.action[0].addEvent(getChildrenValues(&t))
+		}
+	}
 	for _, c := range t.children {
 		result += childrenActionToString(c)
 	}
@@ -58,4 +66,27 @@ func findChildPos(t *tag, child tag) (int, error) {
 		}
 	}
 	return -1, &commonError{"child is not found"}
+}
+
+func checkAttribute(t *tag, text string) bool {
+	for _, attr := range t.attributes {
+		if strings.Contains(attr, text) {
+			return true
+		}
+	}
+	return false
+}
+
+func getChildrenValues(t *tag) string {
+	result := ""
+	for _, c := range t.children {
+		if c.name != "input" && !checkAttribute(&c, "text") {
+			continue
+		}
+		result += getChildrenValues(&c)
+	}
+	if t.name != "input" && !checkAttribute(t, "text") {
+		return result
+	}
+	return fmt.Sprintf("%salert(document.getElementById('%s').value)\n", result, t.uid)
 }

@@ -31,6 +31,17 @@ func childrenStyleToString(t tag) string {
 	return fmt.Sprintf("%s#%s {%s;}\n", result, t.uid, strings.Join(t.style, "; "))
 }
 
+func childrenActionToString(t tag) string {
+	result := ""
+	for _, c := range t.children {
+		result += childrenActionToString(c)
+	}
+	for _, a := range t.action {
+		result += fmt.Sprintf("%s\n", a.toString(t.uid))
+	}
+	return result
+}
+
 func generateUID() string {
 	b := make([]byte, 16)
 	_, err := rand.Read(b)

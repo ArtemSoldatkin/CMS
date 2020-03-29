@@ -6,6 +6,7 @@ type tag struct {
 	style    []string
 	children []tag
 	value    string
+	action   []action
 }
 
 func (t *tag) Init() {

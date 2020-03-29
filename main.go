@@ -4,8 +4,11 @@ func main() {
 
 	span := tag{name: "span", style: []string{"width:100px", "height:100px", "background:red"}, value: "some text"}
 	span.Init()
-	button := tag{name: "button", style: []string{"width:100px", "height:100px"}, value: "ok"}
+
+	buttonAction := action{"click", "console.log('Hello World')"}
+	button := tag{name: "button", style: []string{"width:100px", "height:100px"}, value: "ok", action: []action{buttonAction}}
 	button.Init()
+
 	img := tag{name: "img", style: []string{"width:100px", "height:100px"}}
 	img.Init()
 

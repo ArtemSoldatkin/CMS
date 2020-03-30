@@ -37,15 +37,15 @@ func childrenStyleToString(t tag) string {
 func childrenActionToString(t tag) string {
 	result := ""
 	if t.name == "form" {
-		if len(t.action) > 0 {
-			t.action[0].addEvent(getChildrenValues(&t))
+		if len(t.actions) > 0 {
+			t.actions[0].addEvent(getChildrenValues(&t))
 		}
 	}
 	for _, c := range t.children {
 		result += childrenActionToString(c)
 	}
-	for _, a := range t.action {
-		result += fmt.Sprintf("%s\n", a.toString(t.uid))
+	for _, a := range t.actions {
+		result += fmt.Sprintf("%s", a.toString(t.uid))
 	}
 	return result
 }
@@ -79,14 +79,43 @@ func checkAttribute(t *tag, text string) bool {
 
 func getChildrenValues(t *tag) string {
 	result := ""
-	for _, c := range t.children {
-		if c.name != "input" && !checkAttribute(&c, "text") {
-			continue
-		}
-		result += getChildrenValues(&c)
-	}
 	if t.name != "input" && !checkAttribute(t, "text") {
 		return result
 	}
+	for _, c := range t.children {
+		result += getChildrenValues(&c)
+	}
 	return fmt.Sprintf("%salert(document.getElementById('%s').value)\n", result, t.uid)
+}
+
+func createVariables(t *tag) string {
+	var result string
+	for _, c := range t.children {
+		if !checkTextInput(&c) {
+			continue
+		}
+		result += createVariables(&c)
+	}
+	if !checkTextInput(t) {
+		return result
+	}
+	return fmt.Sprintf("%s,%s", result, strings.ReplaceAll(t.uid, "-", ""))
+}
+
+func createOnChange(t *tag) string {
+	var result string
+	for _, c := range t.children {
+		if !checkTextInput(&c) {
+			continue
+		}
+		result += onChange(&c)
+	}
+	if !checkTextInput(t) {
+		return result
+	}
+	return fmt.Sprintf("%s\n%s", result, onChange(t))
+}
+
+func getVariable(t *tag) string {
+	return strings.ReplaceAll(t.uid, "-", "")
 }

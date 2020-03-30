@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type html struct {
 	children []tag
@@ -22,12 +25,26 @@ func (h html) getStyle() string {
 	return result
 }
 
+/*
 func (h html) getAction() string {
 	result := ""
 	for _, c := range h.children {
 		result += childrenActionToString(c)
 	}
 	return fmt.Sprintf("window.onload=function(){%s}", result)
+}
+*/
+func (h html) getAction() string {
+	var variables, setVariables, result string
+	for _, c := range h.children {
+		variables += strings.Trim(createVariables(&c), ",")
+		setVariables += createOnChange(&c)
+		result += childrenActionToString(c)
+	}
+	if variables != "" {
+		variables = fmt.Sprintf("var %s\n", variables)
+	}
+	return fmt.Sprintf("%swindow.onload=function(){\n%s%s}", variables, setVariables, result)
 }
 
 func (h html) build(fileName string) {

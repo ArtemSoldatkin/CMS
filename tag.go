@@ -7,7 +7,7 @@ type tag struct {
 	style      []string
 	children   []tag
 	value      string
-	action     []action
+	actions    []action
 }
 
 func (t *tag) Init() {
@@ -16,6 +16,14 @@ func (t *tag) Init() {
 
 func (t tag) String() string {
 	return childrenToString(t)
+}
+
+func (t *tag) addAttribute(attr string) {
+	t.attributes = append(t.attributes, attr)
+}
+
+func (t *tag) addAction(act action) {
+	t.actions = append(t.actions, act)
 }
 
 func (t *tag) appendChildren(newChildren []tag) {

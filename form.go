@@ -18,13 +18,23 @@ func createForm(submitLable string, inputsText []inputText) *tag {
 }
 
 func createFormAction(form *tag) string {
-	var variables []string
+	var variables, variableNames []string
 	for _, c := range form.children {
 		if checkTextInput(&c) {
 			variables = append(variables, getVariable(&c))
+			variableNames = append(variableNames, c.valueName)
 		}
 	}
-	return fmt.Sprintf("alert([%s].join(\" \"))", strings.Join(variables, ","))
+	validation := validateInputs(form)
+	var result []string
+	for i, v := range variables {
+		if variableNames[i] != "" {
+			result = append(result, fmt.Sprintf("%s: ${%s}", variableNames[i], v))
+		} else {
+			result = append(result, fmt.Sprintf("${%s}", v))
+		}
+	}
+	return fmt.Sprintf("\n%s\nalert(`%s`)", validation, strings.Join(result, ", "))
 }
 
 func createTextFields(inputs []inputText) []tag {
@@ -33,4 +43,15 @@ func createTextFields(inputs []inputText) []tag {
 		result = append(result, createTextField(input)...)
 	}
 	return result
+}
+
+func validateInputs(f *tag) string {
+	var values []string
+	for _, c := range f.children {
+		if checkTextInput(&c) {
+			values = append(values, createValidation(&c))
+		}
+	}
+	condition := strings.Join(values, "||")
+	return fmt.Sprintf("if(%s)alert(\"some fields is empty\")", condition)
 }

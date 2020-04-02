@@ -6,11 +6,15 @@ import (
 )
 
 type inputText struct {
-	label, placeholder string
+	label, placeholder, valueName, validation string
 }
 
 func createTextField(params inputText) []tag {
-	input := tag{name: "input", attributes: []string{"type=\"text\""}}
+	valueName := params.valueName
+	if valueName == "" {
+		valueName = params.label
+	}
+	input := tag{name: "input", attributes: []string{"type=\"text\""}, valueName: valueName}
 	input.Init()
 	if params.placeholder != "" {
 		input.addAttribute(fmt.Sprintf("placeholder=\"%s\"", params.placeholder))
@@ -29,4 +33,11 @@ func onChange(input *tag) string {
 
 func checkTextInput(t *tag) bool {
 	return t.name == "input" && checkAttribute(t, "text")
+}
+
+func createValidation(t *tag) string {
+	if t.validation == "" {
+		return fmt.Sprintf("!%s", getVariable(t))
+	}
+	return t.validation
 }

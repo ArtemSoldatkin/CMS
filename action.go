@@ -8,7 +8,7 @@ type action struct {
 }
 
 func (a action) toString(tagID string) string {
-	return fmt.Sprintf("document.getElementById('%s').addEventListener('%s', function(){%s})\n", tagID, a.actionType, a.event)
+	return fmt.Sprintf("document.getElementById('%s').addEventListener('%s', function(e){%s})\n", tagID, a.actionType, a.event)
 }
 
 func (a *action) addEvent(event string) {

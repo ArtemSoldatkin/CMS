@@ -34,7 +34,10 @@ func createFormAction(form *tag) string {
 			result = append(result, fmt.Sprintf("${%s}", v))
 		}
 	}
-	return fmt.Sprintf("\n%s\nalert(`%s`)", validation, strings.Join(result, ", "))
+
+	query := makeQueryToServer(queryParams{"http://localhost:5000", "POST", "data"})
+
+	return fmt.Sprintf("\n%s\n%s\n%s\nalert(`%s`)", preventDefault, validation, query, strings.Join(result, ", "))
 }
 
 func createTextFields(inputs []inputText) []tag {

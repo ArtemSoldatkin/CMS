@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 const preventDefault = "e.preventDefault()"
 
@@ -9,7 +12,7 @@ type queryParams struct {
 }
 
 func makeFetch(qp *queryParams) string {
-	return fmt.Sprintf("fetch('%s',{method: '%s',headers: {'Content-Type': 'application/json',},body: JSON.stringify(\"%s\")})", qp.url, qp.method, qp.data)
+	return fmt.Sprintf("fetch('%s',{method: '%s',headers: {'Content-Type': 'application/json',},body: JSON.stringify(%s)})", qp.url, qp.method, qp.data)
 }
 
 func returnFetchResult() string {
@@ -18,4 +21,24 @@ func returnFetchResult() string {
 
 func makeQueryToServer(qp queryParams) string {
 	return fmt.Sprintf("%s\n%s", makeFetch(&qp), returnFetchResult())
+}
+
+func valuesToObject(form *tag) string {
+	var variables, variableNames []string
+	for _, c := range form.children {
+		if checkTextInput(&c) {
+			variables = append(variables, getVariable(&c))
+			variableNames = append(variableNames, c.valueName)
+		}
+	}
+	var result []string
+	for i, v := range variables {
+		if variableNames[i] != "" {
+			result = append(result, fmt.Sprintf("%s: %s", variableNames[i], v))
+		} else {
+			continue
+			//result = append(result, fmt.Sprintf("${%s}", v))
+		}
+	}
+	return fmt.Sprintf("{\n%s\n}", strings.Join(result, ",\n"))
 }

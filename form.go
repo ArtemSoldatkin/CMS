@@ -18,26 +18,10 @@ func createForm(submitLable string, inputsText []inputText) *tag {
 }
 
 func createFormAction(form *tag) string {
-	var variables, variableNames []string
-	for _, c := range form.children {
-		if checkTextInput(&c) {
-			variables = append(variables, getVariable(&c))
-			variableNames = append(variableNames, c.valueName)
-		}
-	}
 	validation := validateInputs(form)
-	var result []string
-	for i, v := range variables {
-		if variableNames[i] != "" {
-			result = append(result, fmt.Sprintf("%s: ${%s}", variableNames[i], v))
-		} else {
-			result = append(result, fmt.Sprintf("${%s}", v))
-		}
-	}
-
-	query := makeQueryToServer(queryParams{"http://localhost:5000", "POST", "data"})
-
-	return fmt.Sprintf("\n%s\n%s\n%s\nalert(`%s`)", preventDefault, validation, query, strings.Join(result, ", "))
+	values := valuesToObject(form)
+	query := makeQueryToServer(queryParams{"http://localhost:5000", "POST", values})
+	return fmt.Sprintf("\n%s\n%s\n%s\n", preventDefault, validation, query)
 }
 
 func createTextFields(inputs []inputText) []tag {

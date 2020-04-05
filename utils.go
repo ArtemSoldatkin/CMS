@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cms/tag"
 	"crypto/rand"
 	"fmt"
 	"log"
@@ -15,37 +16,37 @@ func (e *commonError) Error() string {
 	return e.message
 }
 
-func childrenToString(n tag) string {
+func childrenToString(n tag.Tag) string {
 	result := ""
-	for _, c := range n.children {
+	for _, c := range n.Children {
 		result += childrenToString(c)
 	}
-	if n.name == "input" {
-		return fmt.Sprintf("<%s id=\"%s\" %s %s/>", n.name, n.uid, strings.Join(n.attributes, " "), n.value)
+	if n.Name == "input" {
+		return fmt.Sprintf("<%s id=\"%s\" %s %s/>", n.Name, n.UID, strings.Join(n.Attributes, " "), n.Value)
 	}
-	return fmt.Sprintf("<%s id='%s' %s>%s%s</%s>", n.name, n.uid, strings.Join(n.attributes, " "), n.value, result, n.name)
+	return fmt.Sprintf("<%s id='%s' %s>%s%s</%s>", n.Name, n.UID, strings.Join(n.Attributes, " "), n.Value, result, n.Name)
 }
 
-func childrenStyleToString(t tag) string {
+func childrenStyleToString(t tag.Tag) string {
 	result := ""
-	for _, c := range t.children {
+	for _, c := range t.Children {
 		result += childrenStyleToString(c)
 	}
-	return fmt.Sprintf("%s#%s {%s;}\n", result, t.uid, strings.Join(t.style, "; "))
+	return fmt.Sprintf("%s#%s {%s;}\n", result, t.UID, strings.Join(t.Style, "; "))
 }
 
-func childrenActionToString(t tag) string {
+func childrenActionToString(t tag.Tag) string {
 	result := ""
-	if t.name == "form" {
-		if len(t.actions) > 0 {
-			t.actions[0].addEvent(getChildrenValues(&t))
+	if t.Name == "form" {
+		if len(t.Actions) > 0 {
+			t.Actions[0].AddEvent(getChildrenValues(&t))
 		}
 	}
-	for _, c := range t.children {
+	for _, c := range t.Children {
 		result += childrenActionToString(c)
 	}
-	for _, a := range t.actions {
-		result += fmt.Sprintf("%s", a.toString(t.uid))
+	for _, a := range t.Actions {
+		result += fmt.Sprintf("%s", a.ToString(t.UID))
 	}
 	return result
 }
@@ -59,17 +60,17 @@ func generateUID() string {
 	return fmt.Sprintf("id%x-%x-%x-%x-%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
 }
 
-func findChildPos(t *tag, child tag) (int, error) {
-	for i, c := range t.children {
-		if c.uid == child.uid {
+func findChildPos(t *tag.Tag, child tag.Tag) (int, error) {
+	for i, c := range t.Children {
+		if c.UID == child.UID {
 			return i, nil
 		}
 	}
 	return -1, &commonError{"child is not found"}
 }
 
-func checkAttribute(t *tag, text string) bool {
-	for _, attr := range t.attributes {
+func checkAttribute(t *tag.Tag, text string) bool {
+	for _, attr := range t.Attributes {
 		if strings.Contains(attr, text) {
 			return true
 		}
@@ -77,20 +78,20 @@ func checkAttribute(t *tag, text string) bool {
 	return false
 }
 
-func getChildrenValues(t *tag) string {
+func getChildrenValues(t *tag.Tag) string {
 	result := ""
-	if t.name != "input" && !checkAttribute(t, "text") {
+	if t.Name != "input" && !checkAttribute(t, "text") {
 		return result
 	}
-	for _, c := range t.children {
+	for _, c := range t.Children {
 		result += getChildrenValues(&c)
 	}
-	return fmt.Sprintf("%salert(document.getElementById('%s').value)\n", result, t.uid)
+	return fmt.Sprintf("%salert(document.getElementById('%s').value)\n", result, t.UID)
 }
 
-func createVariables(t *tag) string {
+func createVariables(t *tag.Tag) string {
 	var result string
-	for _, c := range t.children {
+	for _, c := range t.Children {
 		if !checkTextInput(&c) {
 			continue
 		}
@@ -99,12 +100,12 @@ func createVariables(t *tag) string {
 	if !checkTextInput(t) {
 		return result
 	}
-	return fmt.Sprintf("%s,%s", result, strings.ReplaceAll(t.uid, "-", ""))
+	return fmt.Sprintf("%s,%s", result, strings.ReplaceAll(t.UID, "-", ""))
 }
 
-func createOnChange(t *tag) string {
+func createOnChange(t *tag.Tag) string {
 	var result string
-	for _, c := range t.children {
+	for _, c := range t.Children {
 		if !checkTextInput(&c) {
 			continue
 		}
@@ -116,6 +117,6 @@ func createOnChange(t *tag) string {
 	return fmt.Sprintf("%s\n%s", result, onChange(t))
 }
 
-func getVariable(t *tag) string {
-	return strings.ReplaceAll(t.uid, "-", "")
+func getVariable(t *tag.Tag) string {
+	return strings.ReplaceAll(t.UID, "-", "")
 }

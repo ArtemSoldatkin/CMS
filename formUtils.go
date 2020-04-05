@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cms/tag"
 	"fmt"
 	"strings"
 )
@@ -23,12 +24,12 @@ func makeQueryToServer(qp queryParams) string {
 	return fmt.Sprintf("%s\n%s", makeFetch(&qp), returnFetchResult())
 }
 
-func valuesToObject(form *tag) string {
+func valuesToObject(form *tag.Tag) string {
 	var variables, variableNames []string
-	for _, c := range form.children {
+	for _, c := range form.Children {
 		if checkTextInput(&c) {
 			variables = append(variables, getVariable(&c))
-			variableNames = append(variableNames, c.valueName)
+			variableNames = append(variableNames, c.ValueName)
 		}
 	}
 	var result []string

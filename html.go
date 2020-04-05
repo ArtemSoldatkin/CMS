@@ -1,12 +1,13 @@
 package main
 
 import (
+	"cms/tag"
 	"fmt"
 	"strings"
 )
 
 type html struct {
-	children []tag
+	children []tag.Tag
 }
 
 func (h html) getDOM(fileName string) string {

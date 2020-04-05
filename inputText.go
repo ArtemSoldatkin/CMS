@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cms/tag"
 	"fmt"
 	"strings"
 )
@@ -9,35 +10,35 @@ type inputText struct {
 	label, placeholder, valueName, validation string
 }
 
-func createTextField(params inputText) []tag {
+func createTextField(params inputText) []tag.Tag {
 	valueName := params.valueName
 	if valueName == "" {
 		valueName = params.label
 	}
-	input := tag{name: "input", attributes: []string{"type=\"text\""}, valueName: valueName}
+	input := tag.Tag{Name: "input", Attributes: []string{"type=\"text\""}, ValueName: valueName}
 	input.Init()
 	if params.placeholder != "" {
-		input.addAttribute(fmt.Sprintf("placeholder=\"%s\"", params.placeholder))
+		input.AddAttribute(fmt.Sprintf("placeholder=\"%s\"", params.placeholder))
 	}
 	if params.label != "" {
-		label := tag{name: "label", value: params.label, attributes: []string{fmt.Sprintf("for=%s", input.uid)}}
+		label := tag.Tag{Name: "label", Value: params.label, Attributes: []string{fmt.Sprintf("for=%s", input.UID)}}
 		label.Init()
-		return []tag{label, input}
+		return []tag.Tag{label, input}
 	}
-	return []tag{input}
+	return []tag.Tag{input}
 }
 
-func onChange(input *tag) string {
-	return fmt.Sprintf("document.getElementById(\"%s\").addEventListener(\"change\",function(e){%s=e.target.value})\n", input.uid, strings.ReplaceAll(input.uid, "-", ""))
+func onChange(input *tag.Tag) string {
+	return fmt.Sprintf("document.getElementById(\"%s\").addEventListener(\"change\",function(e){%s=e.target.value})\n", input.UID, strings.ReplaceAll(input.UID, "-", ""))
 }
 
-func checkTextInput(t *tag) bool {
-	return t.name == "input" && checkAttribute(t, "text")
+func checkTextInput(t *tag.Tag) bool {
+	return t.Name == "input" && checkAttribute(t, "text")
 }
 
-func createValidation(t *tag) string {
-	if t.validation == "" {
+func createValidation(t *tag.Tag) string {
+	if t.Validation == "" {
 		return fmt.Sprintf("!%s", getVariable(t))
 	}
-	return t.validation
+	return t.Validation
 }

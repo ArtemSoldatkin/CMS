@@ -1,5 +1,6 @@
-package actions
+package tag
 
+/*
 import "fmt"
 
 // Actions ...
@@ -17,3 +18,4 @@ func (a Actions) ToString(tagID string) string {
 func (a *Actions) AddEvent(event string) {
 	a.Event += fmt.Sprintf("\n%s", event)
 }
+*/

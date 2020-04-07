@@ -1,13 +1,16 @@
-package main
+package form
 
+/*
 import (
 	"cms/tag"
+	"cms/utils"
 	"fmt"
 	"strings"
 )
 
-type inputText struct {
-	label, placeholder, valueName, validation string
+// InputText - text field for form
+type InputText struct {
+	Label, Placeholder, ValueName, Validation string
 }
 
 func createTextField(params inputText) []tag.Tag {
@@ -32,13 +35,10 @@ func onChange(input *tag.Tag) string {
 	return fmt.Sprintf("document.getElementById(\"%s\").addEventListener(\"change\",function(e){%s=e.target.value})\n", input.UID, strings.ReplaceAll(input.UID, "-", ""))
 }
 
-func checkTextInput(t *tag.Tag) bool {
-	return t.Name == "input" && checkAttribute(t, "text")
-}
-
 func createValidation(t *tag.Tag) string {
 	if t.Validation == "" {
-		return fmt.Sprintf("!%s", getVariable(t))
+		return fmt.Sprintf("!%s", utils.getVariable(t))
 	}
 	return t.Validation
 }
+*/

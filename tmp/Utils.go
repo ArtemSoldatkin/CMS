@@ -1,31 +1,13 @@
-package main
+package tmp
 
+/*
 import (
 	"cms/tag"
-	"crypto/rand"
+
 	"fmt"
 	"log"
 	"strings"
 )
-
-type commonError struct {
-	message string
-}
-
-func (e *commonError) Error() string {
-	return e.message
-}
-
-func childrenToString(n tag.Tag) string {
-	result := ""
-	for _, c := range n.Children {
-		result += childrenToString(c)
-	}
-	if n.Name == "input" {
-		return fmt.Sprintf("<%s id=\"%s\" %s %s/>", n.Name, n.UID, strings.Join(n.Attributes, " "), n.Value)
-	}
-	return fmt.Sprintf("<%s id='%s' %s>%s%s</%s>", n.Name, n.UID, strings.Join(n.Attributes, " "), n.Value, result, n.Name)
-}
 
 func childrenStyleToString(t tag.Tag) string {
 	result := ""
@@ -49,24 +31,6 @@ func childrenActionToString(t tag.Tag) string {
 		result += fmt.Sprintf("%s", a.ToString(t.UID))
 	}
 	return result
-}
-
-func generateUID() string {
-	b := make([]byte, 16)
-	_, err := rand.Read(b)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return fmt.Sprintf("id%x-%x-%x-%x-%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
-}
-
-func findChildPos(t *tag.Tag, child tag.Tag) (int, error) {
-	for i, c := range t.Children {
-		if c.UID == child.UID {
-			return i, nil
-		}
-	}
-	return -1, &commonError{"child is not found"}
 }
 
 func checkAttribute(t *tag.Tag, text string) bool {
@@ -120,3 +84,8 @@ func createOnChange(t *tag.Tag) string {
 func getVariable(t *tag.Tag) string {
 	return strings.ReplaceAll(t.UID, "-", "")
 }
+
+func checkTextInput(t *tag.Tag) bool {
+	return t.Name == "input" && checkAttribute(t, "text")
+}
+*/

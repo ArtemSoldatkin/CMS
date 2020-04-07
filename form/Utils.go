@@ -1,5 +1,6 @@
-package main
+package form
 
+/*
 import (
 	"cms/tag"
 	"fmt"
@@ -43,3 +44,4 @@ func valuesToObject(form *tag.Tag) string {
 	}
 	return fmt.Sprintf("{\n%s\n}", strings.Join(result, ",\n"))
 }
+*/

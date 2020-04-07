@@ -1,7 +1,8 @@
-package main
+package tag
 
-// Actions - dictionary with js actions
-var Actions = newActions()
+/*
+// ActionsDict - dictionary with js actions
+var ActionsDict = newActions()
 
 // ActionsType - type of js actions
 type ActionsType struct {
@@ -15,3 +16,4 @@ func newActions() *ActionsType {
 		Click:  "click",
 	}
 }
+*/

@@ -1,5 +1,6 @@
-package main
+package form
 
+/*
 import (
 	"cms/actions"
 	"cms/tag"
@@ -7,7 +8,8 @@ import (
 	"strings"
 )
 
-func createForm(submitLable, url, method string, inputsText []inputText) *tag.Tag {
+// CreateForm - create form with input text
+func CreateForm(submitLable, url, method string, inputsText []InputText) *tag.Tag {
 	submitButton := tag.Tag{Name: "input", Value: submitLable, Attributes: []string{"type=\"submit\""}}
 	submitButton.Init()
 	inputs := createTextFields(inputsText)
@@ -26,7 +28,7 @@ func createFormAction(form *tag.Tag, url, method string) string {
 	return fmt.Sprintf("\n%s\n%s\n%s\n", preventDefault, validation, query)
 }
 
-func createTextFields(inputs []inputText) []tag.Tag {
+func createTextFields(inputs []InputText) []tag.Tag {
 	var result []tag.Tag
 	for _, input := range inputs {
 		result = append(result, createTextField(input)...)
@@ -44,3 +46,4 @@ func validateInputs(f *tag.Tag) string {
 	condition := strings.Join(values, "||")
 	return fmt.Sprintf("if(%s)alert(\"some fields is empty\")", condition)
 }
+*/

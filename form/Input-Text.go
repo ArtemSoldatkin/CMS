@@ -1,11 +1,8 @@
 package form
 
-/*
 import (
 	"cms/tag"
-	"cms/utils"
 	"fmt"
-	"strings"
 )
 
 // InputText - text field for form
@@ -13,32 +10,20 @@ type InputText struct {
 	Label, Placeholder, ValueName, Validation string
 }
 
-func createTextField(params inputText) []tag.Tag {
-	valueName := params.valueName
-	if valueName == "" {
-		valueName = params.label
-	}
-	input := tag.Tag{Name: "input", Attributes: []string{"type=\"text\""}, ValueName: valueName}
+func createTextField(params InputText) []tag.Tag {
+	input := tag.Tag{Name: "input", Value: "", ValueName: params.ValueName}
 	input.Init()
-	if params.placeholder != "" {
-		input.AddAttribute(fmt.Sprintf("placeholder=\"%s\"", params.placeholder))
+	input.AddAttribute("type", "text")
+	if params.Placeholder != "" {
+		input.AddAttribute("placeholder", params.Placeholder)
 	}
-	if params.label != "" {
-		label := tag.Tag{Name: "label", Value: params.label, Attributes: []string{fmt.Sprintf("for=%s", input.UID)}}
+	event := fmt.Sprintf("%s=e.target.value", tag.UIDToValueName(input.UID))
+	input.AddAction("change", event)
+	if params.Label != "" {
+		label := tag.Tag{Name: "label", Value: params.Label}
 		label.Init()
+		label.AddAttribute("for", input.UID)
 		return []tag.Tag{label, input}
 	}
 	return []tag.Tag{input}
 }
-
-func onChange(input *tag.Tag) string {
-	return fmt.Sprintf("document.getElementById(\"%s\").addEventListener(\"change\",function(e){%s=e.target.value})\n", input.UID, strings.ReplaceAll(input.UID, "-", ""))
-}
-
-func createValidation(t *tag.Tag) string {
-	if t.Validation == "" {
-		return fmt.Sprintf("!%s", utils.getVariable(t))
-	}
-	return t.Validation
-}
-*/

@@ -8,15 +8,15 @@ import (
 
 // Tag - html Tag struct
 type Tag struct {
-	UID  string
-	Name string
-	//Value     string
-	//ValueName string
-	//Validation string
+	UID        string
+	Name       string
 	Attributes map[string]string
 	Style      map[string]string
 	Children   []Tag
-	//Actions    []Actions
+	Value      string
+	ValueName  string
+	Validation string
+	Actions    map[string]string
 }
 
 // Init - initialize tag
@@ -24,7 +24,7 @@ func (t *Tag) Init() {
 	t.UID = generateUID()
 	t.Attributes = make(map[string]string)
 	t.Style = make(map[string]string)
-
+	t.Actions = make(map[string]string)
 }
 
 func (t Tag) String() string {
@@ -104,4 +104,33 @@ func (t *Tag) SwitchChildren(position int, child *Tag) {
 	t.Children = append(t.Children, Tag{})
 	copy(t.Children[position+1:], t.Children[position:])
 	t.Children[position] = *child
+}
+
+// Actions
+
+// AddAction - add action to tag
+func (t *Tag) AddAction(key, value string) {
+	t.Actions[key] = value
+}
+
+// RemoveAction - remove action from tag
+func (t *Tag) RemoveAction(key string) {
+	delete(t.Actions, key)
+}
+
+// ActionToString - convert actions to string
+func (t Tag) ActionToString() string {
+	var result string
+	for k, v := range t.Actions {
+		result += fmt.Sprintf("%s\n", CreateEventListener(t.UID, k, v))
+	}
+	return strings.TrimRight(result, "\n")
+}
+
+// CreateValidation - create validation to tag value
+func (t Tag) CreateValidation() string {
+	if t.Validation == "" {
+		return fmt.Sprintf("!%s", UIDToValueName(t.UID))
+	}
+	return fmt.Sprintf("%s !== %s", UIDToValueName(t.UID), t.Validation)
 }

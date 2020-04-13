@@ -68,7 +68,7 @@ func (t *Tag) RemoveStyle(key string) {
 func (t Tag) StyleToString() string {
 	var result string
 	for k, v := range t.Style {
-		result += fmt.Sprintf("\t%s:%s\n", k, v)
+		result += fmt.Sprintf("\t%s: %s;\n", k, v)
 	}
 	if result != "" {
 		return fmt.Sprintf("%s {\n%s}", t.UID, result)

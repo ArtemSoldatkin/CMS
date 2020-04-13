@@ -1,6 +1,5 @@
-package tmp
+package builder
 
-/*
 import (
 	"fmt"
 	"io/ioutil"
@@ -15,4 +14,3 @@ func writeToFile(fileName string, fileType string, data string) {
 		panic(err)
 	}
 }
-*/

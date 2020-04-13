@@ -30,9 +30,9 @@ func childrenToString(t Tag) string {
 		result += childrenToString(c)
 	}
 	if t.Name == "input" {
-		return fmt.Sprintf("<%s id=\"%s\" %s value=\"%s\"/>", t.Name, t.UID, t.AttributesToString(), t.Value)
+		return fmt.Sprintf("\n<%s id=\"%s\" %s value=\"%s\"/>", t.Name, t.UID, t.AttributesToString(), t.Value)
 	}
-	return fmt.Sprintf("<%s id='%s' %s>%s%s</%s>", t.Name, t.UID, t.AttributesToString(), t.Value, result, t.Name) //t.Value, result, t.Name)
+	return fmt.Sprintf("\n<%s id=\"%s\" %s>%s%s\n</%s>", t.Name, t.UID, t.AttributesToString(), t.Value, result, t.Name) //t.Value, result, t.Name)
 }
 
 // FindChildPosition - find position of child by UID in tag children

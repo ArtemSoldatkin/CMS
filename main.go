@@ -21,7 +21,7 @@ func main() {
 	title := "Test"
 	css := []string{"test"}
 	script := []string{"test"}
-	site := builder.Builder{Title: title, CSS: css, Script: script, Children: []tag.Tag{*form, *form}}
+	site := builder.Builder{Title: title, CSS: css, Script: script, Children: []tag.Tag{*form}}
 	site.Build()
 
 }

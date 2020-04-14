@@ -1,6 +1,7 @@
 package builder
 
 import (
+	"cms/tag"
 	"fmt"
 	"strings"
 )
@@ -19,4 +20,23 @@ func createScriptLink(path string) string {
 
 func createBody(children *[]string) string {
 	return fmt.Sprintf("<body>\n%s\n</body>", strings.Join(*children, "\n"))
+}
+
+func createVariables(t *tag.Tag) string {
+	var result string
+	for _, c := range t.Children {
+		result += createVariables(&c)
+	}
+	if t.Name != "input" {
+		return result
+	}
+	return fmt.Sprintf("%s, %s", result, tag.UIDToValueName(t.UID))
+}
+
+func createEventListeners(t *tag.Tag) string {
+	var result string
+	for _, c := range t.Children {
+		result += createEventListeners(&c)
+	}
+	return fmt.Sprintf("%s\n%s", result, t.ActionToString())
 }

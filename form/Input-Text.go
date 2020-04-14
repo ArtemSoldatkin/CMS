@@ -27,3 +27,14 @@ func createTextField(params InputText) []tag.Tag {
 	}
 	return []tag.Tag{input}
 }
+
+func createInputValidation(t *tag.Tag) string {
+	if t.Name != "input" {
+		return ""
+	}
+	varName := tag.UIDToValueName(t.UID)
+	if t.Validation == "" {
+		return fmt.Sprintf("!%s", varName)
+	}
+	return t.Validation
+}

@@ -13,8 +13,8 @@ func CreateForm(submitLable, url, method string, inputsText []InputText) *tag.Ta
 	inputs = append(inputs, submitButton)
 	form := tag.Tag{Name: "form", Children: inputs}
 	form.Init()
-	/*submitAction := actions.Actions{"submit", createFormAction(&form, url, method)}
-	form.AddAction(submitAction)*/
+	submitEvent := "e.preventDefault();\n\tconsole.log(\"submited\");"
+	form.AddAction("submit", submitEvent)
 	return &form
 }
 

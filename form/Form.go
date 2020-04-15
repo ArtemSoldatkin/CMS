@@ -2,6 +2,7 @@ package form
 
 import (
 	"cms/tag"
+	"fmt"
 )
 
 // CreateForm - create form with input text
@@ -13,7 +14,7 @@ func CreateForm(submitLable, url, method string, inputsText []InputText) *tag.Ta
 	inputs = append(inputs, submitButton)
 	form := tag.Tag{Name: "form", Children: inputs}
 	form.Init()
-	submitEvent := "e.preventDefault();\n\tconsole.log(\"submited\");"
+	submitEvent := fmt.Sprintf("e.preventDefault();\n%s\n%s", createFormValidation(&form), createRequest(&form, url, method))
 	form.AddAction("submit", submitEvent)
 	return &form
 }
@@ -25,26 +26,3 @@ func createTextFieldsToForm(inputs []InputText) []tag.Tag {
 	}
 	return result
 }
-
-/*
-
-
-func createFormAction(form *tag.Tag, url, method string) string {
-	validation := validateInputs(form)
-	values := valuesToObject(form)
-	query := makeQueryToServer(queryParams{url, method, values})
-	return fmt.Sprintf("\n%s\n%s\n%s\n", preventDefault, validation, query)
-}
-
-func validateInputs(f *tag.Tag) string {
-	var values []string
-	for _, c := range f.Children {
-		if checkTextInput(&c) {
-			values = append(values, createValidation(&c))
-		}
-	}
-	condition := strings.Join(values, "||")
-	return fmt.Sprintf("if(%s)alert(\"some fields is empty\")", condition)
-}
-
-*/

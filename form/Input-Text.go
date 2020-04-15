@@ -19,6 +19,10 @@ func createTextField(params InputText) []tag.Tag {
 	}
 	event := fmt.Sprintf("%s=e.target.value", tag.UIDToValueName(input.UID))
 	input.AddAction("change", event)
+
+	event = fmt.Sprintf("if(%s){\nalert(\"Field %s is incorrect!\");\n}", input.CreateValidation(), params.Label)
+	input.AddAction("blur", event)
+
 	if params.Label != "" {
 		label := tag.Tag{Name: "label", Value: params.Label}
 		label.Init()

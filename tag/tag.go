@@ -71,7 +71,7 @@ func (t Tag) StyleToString() string {
 		result += fmt.Sprintf("\t%s: %s;\n", k, v)
 	}
 	if result != "" {
-		return fmt.Sprintf("%s {\n%s}", t.UID, result)
+		return fmt.Sprintf("#%s {\n%s}", t.UID, result)
 	}
 	return result
 }
@@ -130,7 +130,7 @@ func (t Tag) ActionToString() string {
 // CreateValidation - create validation to tag value
 func (t Tag) CreateValidation() string {
 	if t.Validation == "" {
-		return fmt.Sprintf("!%s", UIDToValueName(t.UID))
+		return fmt.Sprintf("!%s", t.UID)
 	}
-	return fmt.Sprintf("%s !== %s", UIDToValueName(t.UID), t.Validation)
+	return fmt.Sprintf("%s !== %s", t.UID, t.Validation)
 }

@@ -6,6 +6,15 @@ import (
 	"strings"
 )
 
+func getVariables(t *tag.Tag, result *[]string) {
+	for _, c := range t.Children {
+		getVariables(&c, result)
+	}
+	if t.Name == "input" && t.ValueName != "" {
+		*result = append(*result, t.UID)
+	}
+}
+
 func getValidations(t *tag.Tag) string {
 	var result string
 	for _, c := range t.Children {
@@ -23,9 +32,9 @@ func createFormValidation(t *tag.Tag) string {
 		return ""
 	}
 	validation = strings.TrimLeft(validation, " || ")
-	falseEvent := "console.log(\"Field is empty\");\nreturn;"
+	falseEvent := "\nreturn;"
 	return fmt.Sprintf("if(%s){\n%s\n}", validation, falseEvent)
-}	
+}
 
 func getInputValues(t *tag.Tag) string {
 	var result string
@@ -35,7 +44,7 @@ func getInputValues(t *tag.Tag) string {
 	if t.Name != "input" || t.ValueName == "" {
 		return result
 	}
-	return fmt.Sprintf("%s,\n%s: %s", result, t.ValueName, tag.UIDToValueName(t.UID))
+	return fmt.Sprintf("%s,\n%s: %s", result, t.ValueName, t.UID)
 }
 
 func getDataToRequest(t *tag.Tag) string {

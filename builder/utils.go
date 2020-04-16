@@ -30,7 +30,7 @@ func createVariables(t *tag.Tag) string {
 	if t.Name != "input" {
 		return result
 	}
-	return fmt.Sprintf("%s, %s", result, tag.UIDToValueName(t.UID))
+	return fmt.Sprintf("%s, %s", result, t.UID)
 }
 
 func createEventListeners(t *tag.Tag) string {
@@ -39,4 +39,37 @@ func createEventListeners(t *tag.Tag) string {
 		result += createEventListeners(&c)
 	}
 	return fmt.Sprintf("%s\n%s", result, t.ActionToString())
+}
+
+func showInvalid(show bool) string {
+	var display string
+	if show {
+		display = "inline"
+	} else {
+		display = "none"
+	}
+	return fmt.Sprintf("document.getElementById(invalidMsg).setAttribute(\"style\", \"display: %s\")", display)
+}
+
+func generateValidationFunc(t *tag.Tag) string {
+	return fmt.Sprintf("function %sIsValid(invalidMsg) {\nif(%s){\n%s\n} else {\n%s\n}\n}", t.UID, t.CreateValidation(), showInvalid(true), showInvalid(false))
+}
+
+func createValidationFunc(t *tag.Tag) string {
+	var result string
+	for _, c := range t.Children {
+		result += createValidationFunc(&c)
+	}
+	if t.Name != "input" {
+		return result
+	}
+	return fmt.Sprintf("%s\n%s", result, generateValidationFunc(t))
+}
+
+func getStyles(t *tag.Tag) string {
+	var result string
+	for _, c := range t.Children {
+		result += getStyles(&c)
+	}
+	return fmt.Sprintf("%s\n%s", result, t.StyleToString())
 }

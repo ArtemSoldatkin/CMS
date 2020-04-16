@@ -31,15 +31,15 @@ func (b Builder) createDOM() string {
 }
 
 func (b Builder) createStyleSheet() string {
-	var style []string
+	var result string
 	for _, c := range b.Children {
-		style = append(style, c.StyleToString())
+		result += getStyles(&c)
 	}
-	return strings.Join(style, "\n")
+	return result
 }
 
 func (b Builder) createAction() string {
-	var variables, actions string
+	var variables, validation, actions string
 	for _, c := range b.Children {
 		variables += createVariables(&c)
 	}
@@ -48,9 +48,12 @@ func (b Builder) createAction() string {
 		variables = fmt.Sprintf("var %s;", variables)
 	}
 	for _, c := range b.Children {
+		validation += createValidationFunc(&c)
+	}
+	for _, c := range b.Children {
 		actions += createEventListeners(&c)
 	}
-	return fmt.Sprintf("%s\nwindow.onload = function(){%s\n}", variables, actions)
+	return fmt.Sprintf("%s%s\nwindow.onload = function(){%s\n}", variables, validation, actions)
 }
 
 // Build - make a site

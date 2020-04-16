@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	"fmt"
 	"log"
-	"strings"
 )
 
 type commonError struct {
@@ -21,7 +20,7 @@ func generateUID() string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return fmt.Sprintf("uid-%x-%x-%x-%x-%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+	return fmt.Sprintf("uid%x%x%x%x%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
 }
 
 func childrenToString(t Tag) string {
@@ -43,9 +42,4 @@ func FindChildPosition(t *Tag, child *Tag) (int, error) {
 		}
 	}
 	return -1, &commonError{"Child is not found"}
-}
-
-// UIDToValueName - convert UID to value name
-func UIDToValueName(uid string) string {
-	return strings.ReplaceAll(uid, "-", "")
 }

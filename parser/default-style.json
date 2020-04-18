@@ -1,0 +1,14 @@
+{
+  "css": [
+    {
+      "name": "form",
+      "style": { "color": "red" },
+      "children": [
+        {
+          "name": "label",
+          "style": { "color": "green" }
+        }
+      ]
+    }
+  ]
+}

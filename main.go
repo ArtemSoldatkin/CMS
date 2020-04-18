@@ -2,7 +2,7 @@ package main
 
 import (
 	"cms/builder"
-	"cms/form"
+	"cms/components/form"
 	"cms/tag"
 )
 
@@ -13,9 +13,9 @@ func main() {
 	//form.AddStyle("background", "green")
 	form.AddStyle("font-size", "24px")
 
-	title := "Test"
-	css := []string{"test"}
-	script := []string{"test"}
+	title := "Title"
+	css := []string{"style", "default-style"}
+	script := []string{"actions"}
 	site := builder.Builder{Title: title, CSS: css, Script: script, Children: []tag.Tag{*form}}
 	site.Build()
 

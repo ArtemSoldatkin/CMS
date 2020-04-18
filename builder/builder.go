@@ -1,6 +1,7 @@
 package builder
 
 import (
+	"cms/parser"
 	"cms/tag"
 	"fmt"
 	"strings"
@@ -58,7 +59,8 @@ func (b Builder) createAction() string {
 
 // Build - make a site
 func (b *Builder) Build() {
-	writeToFile("test", "html", b.createDOM())
-	writeToFile("test", "css", b.createStyleSheet())
-	writeToFile("test", "js", b.createAction())
+	writeToFile("index", "html", b.createDOM())
+	writeToFile("style", "css", b.createStyleSheet())
+	writeToFile("default-style", "css", parser.DeafultStyleToCSS())
+	writeToFile("actions", "js", b.createAction())
 }

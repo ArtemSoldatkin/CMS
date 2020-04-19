@@ -9,13 +9,13 @@ import (
 // Tag - html Tag struct
 type Tag struct {
 	UID        string
-	Name       string
-	Attributes map[string]string
-	Style      map[string]string
-	Children   []Tag
-	Value      string
-	ValueName  string
-	Validation string
+	Name       string            `json:"name"`
+	Attributes map[string]string `json:"attributes"`
+	Style      map[string]string `json:"style"`
+	Children   []Tag             `json:"children"`
+	Value      string            `json:"value"`
+	ValueName  string            `json:"value-name"`
+	Validation string            `json:"validation"`
 	Actions    map[string]string
 }
 

@@ -7,7 +7,11 @@ import (
 
 // InputText - text field for form
 type InputText struct {
-	Label, Placeholder, ValueName, Validation, NotValidMsg string
+	Label       string `json:"label"`
+	Placeholder string `json:"placeholder"`
+	ValueName   string `json:"value-name"`
+	Validation  string `json:"validation"`
+	InvalidMsg  string `json:"invalid-msg"`
 }
 
 func createTextField(params InputText) []tag.Tag {
@@ -21,9 +25,8 @@ func createTextField(params InputText) []tag.Tag {
 
 	result = append(result, input)
 
-	span := tag.Tag{Name: "span", Value: params.NotValidMsg}
+	span := tag.Tag{Name: "span", Value: params.InvalidMsg}
 	span.Init()
-	span.AddStyle("display", "inline")
 	span.AddStyle("color", "red")
 
 	event := fmt.Sprintf("%s=e.target.value;\n%sIsValid(\"%s\");\n", input.UID, input.UID, span.UID)
@@ -36,10 +39,13 @@ func createTextField(params InputText) []tag.Tag {
 		label := tag.Tag{Name: "label", Value: params.Label}
 		label.Init()
 		label.AddAttribute("for", input.UID)
-		return []tag.Tag{label, input, span}
+		div := tag.Tag{Name: "div", Children: []tag.Tag{label, input, span}}
+		div.Init()
+		return []tag.Tag{div}
 	}
-
-	return []tag.Tag{input, span}
+	div := tag.Tag{Name: "div", Children: []tag.Tag{input, span}}
+	div.Init()
+	return []tag.Tag{div}
 }
 
 func createInputValidation(t *tag.Tag) string {

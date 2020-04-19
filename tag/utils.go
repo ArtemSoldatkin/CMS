@@ -30,6 +30,8 @@ func childrenToString(t Tag) string {
 	}
 	if t.Name == "input" {
 		return fmt.Sprintf("\n<%s id=\"%s\" %s value=\"%s\"/>", t.Name, t.UID, t.AttributesToString(), t.Value)
+	} else if t.Name == "img" {
+		return fmt.Sprintf("\n<%s id=\"%s\" %s />", t.Name, t.UID, t.AttributesToString())
 	}
 	return fmt.Sprintf("\n<%s id=\"%s\" %s>%s%s\n</%s>", t.Name, t.UID, t.AttributesToString(), t.Value, result, t.Name) //t.Value, result, t.Name)
 }

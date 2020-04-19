@@ -7,6 +7,14 @@
         {
           "name": "label",
           "style": { "color": "green" }
+        },
+        {
+          "name": "span",
+          "style": {
+            "display": "block",
+            "font-size": "0.7em",
+            "margin-bottom": "2px"
+          }
         }
       ]
     }

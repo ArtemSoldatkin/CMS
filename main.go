@@ -1,5 +1,6 @@
 package main
 
+/*
 import (
 	"cms/builder"
 	"cms/components/form"
@@ -19,4 +20,18 @@ func main() {
 	site := builder.Builder{Title: title, CSS: css, Script: script, Children: []tag.Tag{*form}}
 	site.Build()
 
+}
+*/
+
+import (
+	"cms/builder"
+	"cms/parser"
+)
+
+func main() {
+	title, children := parser.ReadHTML()
+	css := []string{"style", "default-style"}
+	script := []string{"actions"}
+	site := builder.Builder{Title: title, CSS: css, Script: script, Children: children}
+	site.Build()
 }

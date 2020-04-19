@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"cms/components/form"
+	"cms/tag"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -46,7 +48,36 @@ func DeafultStyleToCSS() (style string) {
 	defaultStyle := readDefaultStyle()
 	for _, t := range defaultStyle.CSS {
 		style += fmt.Sprintf("%s\n", getStyle(&t, ""))
-		//fmt.Printf(style)
 	}
 	return
+}
+
+type html struct {
+	Title string `json:"title"`
+	Body  []body `json:"body"`
+}
+
+type body struct {
+	Type   string           `json:"type"`   // [text / form / link / picture]
+	Text   string           `json:"text"`   // [text / form / link]
+	Value  string           `json:"value"`  // [link / picture]
+	Inputs []form.InputText `json:"inputs"` // [form]
+}
+
+// ReadHTML - read html from json file.
+func ReadHTML() (string, []tag.Tag) {
+	var dom html
+	byteValue := readJSON("test-data/html")
+	err := json.Unmarshal(byteValue, &dom)
+	if err != nil {
+		panic(err)
+	}
+	var domNodes []tag.Tag
+	for _, t := range dom.Body {
+		tg := createTag(&t)
+		if tg != nil {
+			domNodes = append(domNodes, *tg)
+		}
+	}
+	return dom.Title, domNodes
 }

@@ -2,9 +2,9 @@ package components
 
 import (
 	"cms/tag"
-	"fmt"
 )
 
+/*
 // LinkAttributes - link parameters
 type LinkAttributes struct {
 	Text, LinkValue, LinkType string
@@ -25,9 +25,18 @@ func CreateLink(attr LinkAttributes) *tag.Tag {
 	link.AddAttribute("href", href)
 	return &link
 }
+*/
 
-// CreateImg - create img
-func CreateImg(imgLink string) *tag.Tag {
+// CreateLink - create lin <a></a>
+func CreateLink(text, value string) *tag.Tag {
+	link := tag.Tag{Name: "a", Value: text}
+	link.Init()
+	link.AddAttribute("href", value)
+	return &link
+}
+
+// CreatePicture - create img
+func CreatePicture(imgLink string) *tag.Tag {
 	img := tag.Tag{Name: "img"}
 	img.Init()
 	img.AddAttribute("src", imgLink)
@@ -36,5 +45,7 @@ func CreateImg(imgLink string) *tag.Tag {
 
 // CreateText - create text
 func CreateText(text string) *tag.Tag {
-	return &tag.Tag{Name: "p", Value: text}
+	tx := tag.Tag{Name: "p", Value: text}
+	tx.Init()
+	return &tx
 }

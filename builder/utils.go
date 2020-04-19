@@ -44,7 +44,7 @@ func createEventListeners(t *tag.Tag) string {
 func showInvalid(show bool) string {
 	var display string
 	if show {
-		display = "inline"
+		display = "block"
 	} else {
 		display = "none"
 	}

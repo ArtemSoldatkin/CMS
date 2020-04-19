@@ -54,15 +54,15 @@ func getDataToRequest(t *tag.Tag) string {
 	return fmt.Sprintf("{\n%s\n}", strings.TrimLeft(getInputValues(t), ","))
 }
 
-func createQuery(url, method, data string) string {
-	return fmt.Sprintf("fetch('%s',{method: '%s',headers: {'Content-Type': 'application/json',},body: JSON.stringify(%s)})", url, method, data)
+func createQuery(url, data string) string {
+	return fmt.Sprintf("fetch(\"%s\",{method: \"POST\",headers: {'Content-Type': 'application/json',},body: JSON.stringify(%s)})", url, data)
 }
 
 func createResponse() string {
 	return ".then((response) => response.json())\n.then((data)=>{console.log('Success:', data);})\n.catch((error) => {console.error('Error:', error);});"
 }
 
-func createRequest(t *tag.Tag, url, method string) string {
+func createRequest(t *tag.Tag, url string) string {
 	data := getDataToRequest(t)
-	return fmt.Sprintf("%s\n%s", createQuery(url, method, data), createResponse())
+	return fmt.Sprintf("%s\n%s", createQuery(url, data), createResponse())
 }

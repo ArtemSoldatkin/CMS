@@ -1,6 +1,11 @@
 package parser
 
-import "fmt"
+import (
+	"cms/components"
+	"cms/components/form"
+	"cms/tag"
+	"fmt"
+)
 
 func getStyle(t *tagStyle, name string) string {
 	var style, result string
@@ -16,4 +21,17 @@ func getStyle(t *tagStyle, name string) string {
 		result += getStyle(&c, t.Name)
 	}
 	return fmt.Sprintf("%s\n %s {\n%s}\n", result, name, style)
+}
+
+func createTag(t *body) *tag.Tag {
+	if t.Type == "picture" {
+		return components.CreatePicture(t.Value)
+	} else if t.Type == "text" {
+		return components.CreateText(t.Text)
+	} else if t.Type == "link" {
+		return components.CreateLink(t.Text, t.Value)
+	} else if t.Type == "form" {
+		return form.CreateForm(t.Text, t.Value, t.Inputs)
+	}
+	return nil
 }

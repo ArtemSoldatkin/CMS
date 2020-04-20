@@ -65,9 +65,8 @@ type body struct {
 }
 
 // ReadHTML - read html from json file.
-func ReadHTML() (string, []tag.Tag) {
+func ReadHTML(byteValue []byte) (string, []tag.Tag) {
 	var dom html
-	byteValue := readJSON("test-data/html")
 	err := json.Unmarshal(byteValue, &dom)
 	if err != nil {
 		panic(err)
@@ -80,4 +79,10 @@ func ReadHTML() (string, []tag.Tag) {
 		}
 	}
 	return dom.Title, domNodes
+}
+
+// ReadHTMLFromFile - read html json from file
+func ReadHTMLFromFile() (string, []tag.Tag) {
+	byteValue := readJSON("test-data/html")
+	return ReadHTML(byteValue)
 }

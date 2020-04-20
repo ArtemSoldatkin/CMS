@@ -4,29 +4,6 @@ import (
 	"cms/tag"
 )
 
-/*
-// LinkAttributes - link parameters
-type LinkAttributes struct {
-	Text, LinkValue, LinkType string
-}
-
-// CreateLink - create link
-func CreateLink(attr LinkAttributes) *tag.Tag {
-	link := tag.Tag{Name: "a", Value: attr.Text}
-	link.Init()
-	var href string
-	if attr.LinkType == "tel" {
-		href = fmt.Sprintf("tel:%s", attr.LinkValue)
-	} else if attr.LinkType == "mail" {
-		href = fmt.Sprintf("mailto:", attr.LinkValue)
-	} else {
-		href = attr.LinkValue
-	}
-	link.AddAttribute("href", href)
-	return &link
-}
-*/
-
 // CreateLink - create lin <a></a>
 func CreateLink(text, value string) *tag.Tag {
 	link := tag.Tag{Name: "a", Value: text}

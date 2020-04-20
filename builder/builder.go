@@ -3,6 +3,7 @@ package builder
 import (
 	"cms/parser"
 	"cms/tag"
+	"encoding/json"
 	"fmt"
 	"strings"
 )
@@ -63,4 +64,14 @@ func (b *Builder) Build() {
 	writeToFile("style", "css", b.createStyleSheet())
 	writeToFile("default-style", "css", parser.DeafultStyleToCSS())
 	writeToFile("actions", "js", b.createAction())
+}
+
+// BuildToJSON - make JSON file with css / html / js
+func (b *Builder) BuildToJSON() ([]byte, error) {
+	result := make(map[string]string)
+	result["html"] = b.createDOM()
+	result["style"] = b.createStyleSheet()
+	result["default-style"] = parser.DeafultStyleToCSS()
+	result["actions"] = b.createAction()
+	return json.Marshal(result)
 }

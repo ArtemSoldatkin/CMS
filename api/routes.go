@@ -21,8 +21,14 @@ func makeSite(w http.ResponseWriter, r *http.Request) {
 	css := []string{"style", "default-style"}
 	script := []string{"actions"}
 	site := builder.Builder{Title: title, CSS: css, Script: script, Children: children}
-	site.Build()
-	// return files
+	json, jsonErr := site.BuildToJSON()
+	if jsonErr != nil {
+		log.Print("Can't convert result to json")
+		http.Error(w, "can't read body", http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(200)
+	w.Write(json)
 }
 
 func createRoutes(r *mux.Router) {

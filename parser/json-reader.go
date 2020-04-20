@@ -10,7 +10,6 @@ import (
 )
 
 func readJSON(fileName string) []byte {
-
 	rootDir, _ := os.Getwd()
 	jsonFile, err := os.Open(fmt.Sprintf("%s/parser/%s.json", rootDir, fileName))
 	if err != nil {
@@ -19,7 +18,6 @@ func readJSON(fileName string) []byte {
 	defer jsonFile.Close()
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	return byteValue
-
 }
 
 type style struct {
@@ -81,8 +79,8 @@ func ReadHTML(byteValue []byte) (string, []tag.Tag) {
 	return dom.Title, domNodes
 }
 
-// ReadHTMLFromFile - read html json from file
-func ReadHTMLFromFile() (string, []tag.Tag) {
+// ReadHTMLFromJSONFile - read html json from file
+func ReadHTMLFromJSONFile() (string, []tag.Tag) {
 	byteValue := readJSON("test-data/html")
 	return ReadHTML(byteValue)
 }

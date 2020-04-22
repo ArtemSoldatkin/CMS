@@ -8,48 +8,59 @@ import (
 	"os"
 )
 
-func readLine(line string) {
-	var tag tag.Tag
-	var curToken, prevToken string
-	for _, c := range line {
-		if c == '<' {
+func getToken(line string, position *int, quot *bool) (token string) {
+	for _, c := range line[*position:] {
+		*position++
+		if c == '\'' || c == '"' {
+			*quot = !*quot
+			continue
+		}
+		if !*quot && (c == ' ' || c == '=') {
+			return
+		}
+		token += string(c)
+		if c == '>' || c == '<' || (c == '/' && !*quot) {
+			return
+		}
+	}
+	return
+}
 
-			tag.Init()
-			curToken = ""
-		} else if c != '>' && c != ' ' && c != '=' && c != '"' && c != '/' {
-			curToken += string(c)
+func readLine(line string, t *[]tag.Tag) {
+	var currentTag tag.Tag
+	var position int
+	var quot, isValue bool
+	token := getToken(line, &position, &quot)
+	for position < len(line) {
+		if token == "<" {
+			token = getToken(line, &position, &quot)
+			if token == "/" {
+				isValue, quot = false, false
+			} else {
+				currentTag = tag.Tag{Name: token}
+				currentTag.Init()
+				*t = append(*t, currentTag)
+			}
+		} else if token == "/" && getToken(line, &position, &quot) == ">" {
+			// pass
 		} else {
-			if curToken == "!DOCTYPE" || curToken == "html" || curToken == "head" || curToken == "link" || curToken == "script" || curToken == "body" {
-				return
-			}
-			if c == '=' {
-				prevToken = curToken
-				curToken = ""
-			}
-			if c == ' ' || c == '>' {
-
-				if tag.Name == "" {
-					tag.Name = curToken
-					curToken = ""
-
-				} else if prevToken != "" {
-					if prevToken == "id" {
-						tag.UID = curToken
-					} else {
-						tag.AddAttribute(prevToken, curToken)
-					}
-					prevToken, curToken = "", ""
+			if isValue {
+				currentTag.Value = getToken(line, &position, &quot)
+			} else {
+				if token == "id" {
+					currentTag.UID = getToken(line, &position, &quot)
+				} else if token == "value" {
+					currentTag.Value = getToken(line, &position, &quot)
+				} else {
+					currentTag.AddAttribute(token, getToken(line, &position, &quot))
 				}
 			}
-
 		}
-
+		token = getToken(line, &position, &quot)
+		if token == ">" {
+			isValue, quot = true, true
+		}
 	}
-	if tag.UID == "" {
-		return
-	}
-	fmt.Println(tag)
-
 }
 
 // ReadHTMLFromFile - read and create html from html file
@@ -62,10 +73,12 @@ func ReadHTMLFromFile(fileName string) {
 	defer html.Close()
 
 	scanner := bufio.NewScanner(html)
+	var t []tag.Tag
 	for scanner.Scan() {
 		line := scanner.Text()
-		readLine(line)
+		readLine(line, &t)
 	}
+	fmt.Println(t)
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)

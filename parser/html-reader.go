@@ -1,71 +1,179 @@
 package parser
 
 import (
-	"bufio"
-	"cms/tag"
+	HTMLTag "cms/tag"
 	"fmt"
-	"log"
-	"os"
+	"strings"
 )
 
-func getToken(line string, position *int, quot *bool) (token string) {
-	for _, c := range line[*position:] {
-		*position++
-		if c == '\'' || c == '"' {
-			*quot = !*quot
-			continue
-		}
-		if !*quot && (c == ' ' || c == '=') {
-			return
-		}
-		token += string(c)
-		if c == '>' || c == '<' || (c == '/' && !*quot) {
-			return
-		}
-	}
-	return
+// Tree node
+type node struct {
+	tag               HTMLTag.Tag
+	isClosed, isChild bool
 }
 
-func readLine(line string, t *[]tag.Tag) {
-	var currentTag tag.Tag
-	var position int
-	var quot, isValue bool
-	token := getToken(line, &position, &quot)
-	for position < len(line) {
-		if token == "<" {
-			token = getToken(line, &position, &quot)
-			if token == "/" {
-				isValue, quot = false, false
+func (n *node) close() {
+	n.isClosed = true
+}
+
+// Html tree
+type tree struct {
+	tree []node
+}
+
+func (t *tree) String() string {
+	var parent []string
+	for _, n := range t.tree {
+		if !n.isChild {
+			parent = append(parent, n.tag.String())
+		}
+	}
+	return strings.Join(parent, "")
+}
+
+func (t *tree) addAttribute(key, value string) {
+	if len(t.tree) > 0 {
+		t.tree[len(t.tree)-1].tag.AddAttribute(key, value)
+	}
+}
+
+func (t *tree) setValue(value string) {
+	if len(t.tree) > 0 {
+		t.tree[len(t.tree)-1].tag.Value += value
+	}
+}
+
+func (t *tree) backward() *node {
+	for i := len(t.tree) - 1; i >= 0; i-- {
+		if !t.tree[i].isClosed {
+			return &t.tree[i]
+		}
+	}
+	return nil
+}
+
+func (t *tree) addNode(n node) {
+	parentNode := t.backward()
+	if parentNode != nil {
+		n.isChild = true
+		parentNode.tag.AppendChild(&n.tag)
+	}
+	t.tree = append(t.tree, n)
+}
+
+func (t *tree) closeNode() {
+	node := t.backward()
+	if node != nil {
+		node.close()
+	}
+}
+
+// Html reader
+
+type reader struct {
+	html, tag       string
+	pos             int
+	isQuot, isValue bool
+	nodeTree        tree
+}
+
+func (r *reader) init() {
+	r.tag = r.getTag()
+}
+
+func (r *reader) String() string {
+	return r.nodeTree.String()
+}
+
+func (r *reader) getTag() string {
+	tag := ""
+	for r.pos < len(r.html) {
+		char := string(r.html[r.pos])
+		r.pos++
+		if r.isValue {
+			if char != "<" {
+				tag += char
+				continue
 			} else {
-				currentTag = tag.Tag{Name: token}
-				currentTag.Init()
-				*t = append(*t, currentTag)
+				r.pos--
+				return tag
 			}
-		} else if token == "/" && getToken(line, &position, &quot) == ">" {
-			// pass
-		} else {
-			if isValue {
-				currentTag.Value = getToken(line, &position, &quot)
-			} else {
-				if token == "id" {
-					currentTag.UID = getToken(line, &position, &quot)
-				} else if token == "value" {
-					currentTag.Value = getToken(line, &position, &quot)
-				} else {
-					currentTag.AddAttribute(token, getToken(line, &position, &quot))
+		}
+
+		if char == ">" {
+			return char
+		}
+
+		if char == "<" {
+			if tag != "" {
+				r.pos--
+				return tag
+			}
+			return char
+		}
+
+		if char == "\"" || char == "'" {
+			r.isQuot = !r.isQuot
+			if !r.isQuot {
+				return tag
+			}
+			continue
+		}
+
+		if !r.isQuot {
+			if char == "/" {
+				return char
+			}
+			if char == " " || char == "=" || char == "\n" {
+				if tag != "" {
+					return tag
 				}
+				continue
 			}
 		}
-		token = getToken(line, &position, &quot)
-		if token == ">" {
-			isValue, quot = true, true
+
+		tag += char
+	}
+	return tag
+}
+
+func (r *reader) read() {
+	for r.pos < len(r.html) {
+		if r.tag == "<" {
+			tag := r.getTag()
+			r.isValue = false
+			if tag != "/" {
+				htmlTag := HTMLTag.Tag{Name: tag}
+				htmlTag.Init()
+				r.nodeTree.addNode(node{tag: htmlTag, isClosed: false})
+			} else {
+				r.nodeTree.closeNode()
+			}
+		} else if r.tag == "/" {
+			tag := r.getTag()
+			if tag == ">" {
+				r.nodeTree.closeNode()
+			}
+		} else if r.tag == ">" {
+			r.isValue = true
+			tag := r.getTag()
+			if tag != "<" {
+				r.nodeTree.setValue(tag)
+				r.isValue = false
+			} else {
+				r.isValue = false
+				continue
+			}
+		} else if !r.isValue {
+			r.nodeTree.addAttribute(r.tag, r.getTag())
 		}
+		r.tag = r.getTag()
 	}
 }
 
 // ReadHTMLFromFile - read and create html from html file
 func ReadHTMLFromFile(fileName string) {
-	rootDir, _ := os.Getwd()
+	/*rootDir, _ := os.Getwd()
 	html, err := os.Open(fmt.Sprintf("%s/parser/test-data/%s.html", rootDir, fileName))
 	if err != nil {
 		panic(err)
@@ -82,5 +190,12 @@ func ReadHTMLFromFile(fileName string) {
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
-	}
+	}*/
+
+	html := "<div class=\"test_cls\">div text<span class=\"span_cls\">span text<input type=\"text\" /> <button class=\"button_cls\">button text</button></span></div><div class=\"second_div\">div textx <p class=\"p_cls\">text</p><div class=\"p2\">new text</div></div>"
+
+	r := reader{html: html}
+	r.init()
+	r.read()
+	fmt.Println(r.String())
 }

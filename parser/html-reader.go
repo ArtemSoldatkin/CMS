@@ -1,8 +1,10 @@
 package parser
 
 import (
+	"bytes"
 	HTMLTag "cms/tag"
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -124,7 +126,7 @@ func (r *reader) getTag() string {
 			if char == "/" {
 				return char
 			}
-			if char == " " || char == "=" || char == "\n" {
+			if char == " " || char == "\t" || char == "=" || char == "\n" {
 				if tag != "" {
 					return tag
 				}
@@ -173,27 +175,19 @@ func (r *reader) read() {
 
 // ReadHTMLFromFile - read and create html from html file
 func ReadHTMLFromFile(fileName string) {
-	/*rootDir, _ := os.Getwd()
-	html, err := os.Open(fmt.Sprintf("%s/parser/test-data/%s.html", rootDir, fileName))
+	rootDir, _ := os.Getwd()
+	file, err := os.Open(fmt.Sprintf("%s/parser/test-data/%s.html", rootDir, fileName))
 	if err != nil {
 		panic(err)
 	}
-	defer html.Close()
+	defer file.Close()
 
-	scanner := bufio.NewScanner(html)
-	var t []tag.Tag
-	for scanner.Scan() {
-		line := scanner.Text()
-		readLine(line, &t)
+	var buf bytes.Buffer
+	_, err = buf.ReadFrom(file)
+	if err != nil {
+		panic(err)
 	}
-	fmt.Println(t)
-
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-	}*/
-
-	html := "<div class=\"test_cls\">div text<span class=\"span_cls\">span text<input type=\"text\"/><button class=\"button_cls\">button text</button></span></div><div class=\"second_div\">div textx <p class=\"p_cls\">text</p><div class=\"p2\">new text</div></div>"
-
+	html := buf.String()
 	r := reader{html: html}
 	r.init()
 	r.read()

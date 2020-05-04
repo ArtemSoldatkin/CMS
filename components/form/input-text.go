@@ -14,7 +14,7 @@ type InputText struct {
 	InvalidMsg  string `json:"invalid-msg"`
 }
 
-func createTextField(params InputText) []tag.Tag {
+func createTextField(params InputText) []*tag.Tag {
 	var result []tag.Tag
 	input := tag.Tag{Name: "input", Value: "", ValueName: params.ValueName}
 	input.Init()
@@ -39,13 +39,13 @@ func createTextField(params InputText) []tag.Tag {
 		label := tag.Tag{Name: "label", Value: params.Label}
 		label.Init()
 		label.AddAttribute("for", input.UID)
-		div := tag.Tag{Name: "div", Children: []tag.Tag{label, input, span}}
+		div := tag.Tag{Name: "div", Children: []*tag.Tag{&label, &input, &span}}
 		div.Init()
-		return []tag.Tag{div}
+		return []*tag.Tag{&div}
 	}
-	div := tag.Tag{Name: "div", Children: []tag.Tag{input, span}}
+	div := tag.Tag{Name: "div", Children: []*tag.Tag{&input, &span}}
 	div.Init()
-	return []tag.Tag{div}
+	return []*tag.Tag{&div}
 }
 
 func createInputValidation(t *tag.Tag) string {

@@ -8,7 +8,7 @@ import (
 
 func getVariables(t *tag.Tag, result *[]string) {
 	for _, c := range t.Children {
-		getVariables(&c, result)
+		getVariables(c, result)
 	}
 	if t.Name == "input" && t.ValueName != "" {
 		*result = append(*result, t.UID)
@@ -18,7 +18,7 @@ func getVariables(t *tag.Tag, result *[]string) {
 func getValidations(t *tag.Tag) string {
 	var result string
 	for _, c := range t.Children {
-		result += getValidations(&c)
+		result += getValidations(c)
 	}
 	if t.Name != "input" || t.ValueName == "" {
 		return result
@@ -39,7 +39,7 @@ func createFormValidation(t *tag.Tag) string {
 func getInputValues(t *tag.Tag) string {
 	var result string
 	for _, c := range t.Children {
-		result += getInputValues(&c)
+		result += getInputValues(c)
 	}
 	if t.Name != "input" || t.ValueName == "" {
 		return result

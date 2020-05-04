@@ -25,7 +25,7 @@ func createBody(children *[]string) string {
 func createVariables(t *tag.Tag) string {
 	var result string
 	for _, c := range t.Children {
-		result += createVariables(&c)
+		result += createVariables(c)
 	}
 	if t.Name != "input" {
 		return result
@@ -36,7 +36,7 @@ func createVariables(t *tag.Tag) string {
 func createEventListeners(t *tag.Tag) string {
 	var result string
 	for _, c := range t.Children {
-		result += createEventListeners(&c)
+		result += createEventListeners(c)
 	}
 	return fmt.Sprintf("%s\n%s", result, t.ActionToString())
 }
@@ -58,7 +58,7 @@ func generateValidationFunc(t *tag.Tag) string {
 func createValidationFunc(t *tag.Tag) string {
 	var result string
 	for _, c := range t.Children {
-		result += createValidationFunc(&c)
+		result += createValidationFunc(c)
 	}
 	if t.Name != "input" {
 		return result
@@ -69,7 +69,7 @@ func createValidationFunc(t *tag.Tag) string {
 func getStyles(t *tag.Tag) string {
 	var result string
 	for _, c := range t.Children {
-		result += getStyles(&c)
+		result += getStyles(c)
 	}
 	return fmt.Sprintf("%s\n%s", result, t.StyleToString())
 }

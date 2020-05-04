@@ -12,7 +12,7 @@ type Tag struct {
 	Name       string            `json:"name"`
 	Attributes map[string]string `json:"attributes"`
 	Style      map[string]string `json:"style"`
-	Children   []Tag             `json:"children"`
+	Children   []*Tag            `json:"children"`
 	Value      string            `json:"value"`
 	ValueName  string            `json:"value-name"`
 	Validation string            `json:"validation"`
@@ -27,7 +27,7 @@ func (t *Tag) Init() {
 	t.Actions = make(map[string]string)
 }
 
-func (t Tag) String() string {
+func (t *Tag) String() string {
 	return childrenToString(t)
 }
 
@@ -80,7 +80,7 @@ func (t Tag) StyleToString() string {
 
 // AppendChild - add new child to tag
 func (t *Tag) AppendChild(child *Tag) {
-	t.Children = append(t.Children, *child)
+	t.Children = append(t.Children, child)
 }
 
 // RemoveChild - remove child from tag children
@@ -90,7 +90,7 @@ func (t *Tag) RemoveChild(UID string, child *Tag) {
 		log.Fatal(err)
 	}
 	copy(t.Children[pos:], t.Children[pos+1:])
-	t.Children[len(t.Children)-1] = Tag{}
+	t.Children[len(t.Children)-1] = nil
 	t.Children = t.Children[:len(t.Children)-1]
 }
 
@@ -101,9 +101,9 @@ func (t *Tag) SwitchChildren(position int, child *Tag) {
 		log.Fatal(err)
 	}
 	t.Children = append(t.Children[:currPos], t.Children[currPos+1:]...)
-	t.Children = append(t.Children, Tag{})
+	t.Children = append(t.Children, nil)
 	copy(t.Children[position+1:], t.Children[position:])
-	t.Children[position] = *child
+	t.Children[position] = child
 }
 
 // Actions

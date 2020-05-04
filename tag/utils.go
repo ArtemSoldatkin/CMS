@@ -23,7 +23,7 @@ func generateUID() string {
 	return fmt.Sprintf("uid%x%x%x%x%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
 }
 
-func childrenToString(t Tag) string {
+func childrenToString(t *Tag) string {
 	result := ""
 	for _, c := range t.Children {
 		result += childrenToString(c)

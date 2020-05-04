@@ -8,7 +8,7 @@ import (
 
 // Tree node
 type node struct {
-	tag               HTMLTag.Tag
+	tag               *HTMLTag.Tag
 	isClosed, isChild bool
 }
 
@@ -18,7 +18,7 @@ func (n *node) close() {
 
 // Html tree
 type tree struct {
-	tree []node
+	tree []*node
 }
 
 func (t *tree) String() string {
@@ -46,17 +46,17 @@ func (t *tree) setValue(value string) {
 func (t *tree) backward() *node {
 	for i := len(t.tree) - 1; i >= 0; i-- {
 		if !t.tree[i].isClosed {
-			return &t.tree[i]
+			return t.tree[i]
 		}
 	}
 	return nil
 }
 
-func (t *tree) addNode(n node) {
+func (t *tree) addNode(n *node) {
 	parentNode := t.backward()
 	if parentNode != nil {
 		n.isChild = true
-		parentNode.tag.AppendChild(&n.tag)
+		parentNode.tag.AppendChild(n.tag)
 	}
 	t.tree = append(t.tree, n)
 }
@@ -145,7 +145,7 @@ func (r *reader) read() {
 			if tag != "/" {
 				htmlTag := HTMLTag.Tag{Name: tag}
 				htmlTag.Init()
-				r.nodeTree.addNode(node{tag: htmlTag, isClosed: false})
+				r.nodeTree.addNode(&node{tag: &htmlTag, isClosed: false})
 			} else {
 				r.nodeTree.closeNode()
 			}
@@ -192,7 +192,7 @@ func ReadHTMLFromFile(fileName string) {
 		log.Fatal(err)
 	}*/
 
-	html := "<div class=\"test_cls\">div text<span class=\"span_cls\">span text<input type=\"text\" /> <button class=\"button_cls\">button text</button></span></div><div class=\"second_div\">div textx <p class=\"p_cls\">text</p><div class=\"p2\">new text</div></div>"
+	html := "<div class=\"test_cls\">div text<span class=\"span_cls\">span text<input type=\"text\"/><button class=\"button_cls\">button text</button></span></div><div class=\"second_div\">div textx <p class=\"p_cls\">text</p><div class=\"p2\">new text</div></div>"
 
 	r := reader{html: html}
 	r.init()
